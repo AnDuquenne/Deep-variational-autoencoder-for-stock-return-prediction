@@ -306,20 +306,29 @@ if __name__ == "__main__":
     flow.load_state_dict(torch.load("io/StockFlow/2024-05-26_05-02-16/weights/weights.pt"))
     flow.eval().to(device)
 
+    r2 = []
+    mse = []
+    mae = []
+
     for idx, (input) in enumerate(test_loader):
 
+        input = input.float()
+        input = input.to(device)
+
+        target = input[:, -1]
+
+        context = input[:, :-1]
+
+        x_mean = flow.sample(1000, context).cpu().detach().numpy().squeeze().mean(axis=1)
+        x_std = flow.sample(1000, context).cpu().detach().numpy().squeeze().std(axis=1)
+
+        r2.append(utils.compute_r_squared(target.cpu().detach().numpy(), x_mean))
+        mse.append(utils.compute_mse(target.cpu().detach().numpy(), x_mean))
+        mae.append(utils.compute_mae(target.cpu().detach().numpy(), x_mean))
+
         if idx == 0:
-            input = input.float()
-            input = input.to(device)
-
-            target = input[:, -1]
-            if target.dim() == 1:
-                target = target.unsqueeze(1)
-
-            context = input[:, :-1]
-
-            x_mean = flow.sample(1000, context).cpu().detach().numpy().squeeze().mean(axis=1)
-            x_std = flow.sample(1000, context).cpu().detach().numpy().squeeze().std(axis=1)
+            print(x_mean)
+            print(target.cpu().detach().numpy())
 
             plt.plot(target.cpu().detach().numpy(), label="True")
             plt.plot(x_mean, label="Prediction", linestyle="--")
@@ -330,3 +339,7 @@ if __name__ == "__main__":
             plt.legend()
             plt.savefig("io/StockFlow/prediction_vs_target_test.png")
             plt.show()
+
+    print(f"r2: {np.mean(r2)}")
+    print(f"mse: {np.mean(mse)}")
+    print(f"mae: {np.mean(mae)}")
