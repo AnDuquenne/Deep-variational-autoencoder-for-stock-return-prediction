@@ -622,89 +622,89 @@ if __name__ == "__main__":
     if DEBUG:
         trainer.set_wandb(False)
 
-    # trainer.train()
+    trainer.train()
 
-    # -------------------------------------------- Make a prediction -------------------------------------------- #
-    trainer.set_wandb(False)
-    model.load_state_dict(torch.load("io/FactorVAE/2024-05-25_02-09-55/weights/weights.pt"))
-    model.eval().to(device)
-
-    for idx, (input) in enumerate(test_loader):
-
-        if idx == 0:
-            input = input.float()
-            input = input.to(device)
-
-            batch_reconstructed, mean, var, z = model(input)
-
-            input = input.cpu().detach()
-            batch_reconstructed = batch_reconstructed.cpu().detach()
-
-            print(f"input size: {input[0, :].size()}")
-            print(input[0, :])
-            print(f"batch_reconstructed size: {batch_reconstructed[0, :].size()}")
-            print(batch_reconstructed[0, :])
-
-            input = input.view(input.size(0), -1, nb_features)
-            batch_reconstructed = batch_reconstructed.view(batch_reconstructed.size(0), -1, nb_features)
-            print(f"input size: {input[0, :].size()}")
-            print(input[0, :])
-            print(f"batch_reconstructed size: {batch_reconstructed[0, :].size()}")
-            print(batch_reconstructed[0, :])
-
-            fig = plt.figure(figsize=(12, 10), layout='constrained')
-            axs = fig.subplot_mosaic([['AE_1'], ['AE_2'], ['AE_3']])
-            axs['AE_1'].set_title("AE_1")
-            axs['AE_1'].set_xlabel("Time")
-            axs['AE_1'].set_ylabel("Value")
-            axs['AE_1'].plot(input[idx, :, 0])
-            axs['AE_1'].plot(batch_reconstructed[idx, :, 0], linestyle="--")
-            axs['AE_1'].legend(['input', 'reconstructed'])
-
-            axs['AE_2'].set_title("AE_2")
-            axs['AE_2'].set_xlabel("Time")
-            axs['AE_2'].set_ylabel("Value")
-            axs['AE_2'].plot(input[idx, :, 1])
-            axs['AE_2'].plot(batch_reconstructed[idx, :, 1], linestyle="--")
-            axs['AE_2'].legend(['input', 'reconstructed'])
-
-            axs['AE_3'].set_title("AE_3")
-            axs['AE_3'].set_xlabel("Time")
-            axs['AE_3'].set_ylabel("Value")
-            axs['AE_3'].plot(input[idx, :, 2])
-            axs['AE_3'].plot(batch_reconstructed[idx, :, 2], linestyle="--")
-            axs['AE_3'].legend(['input', 'reconstructed'])
-
-            plt.tight_layout()
-            # save the figure
-            plt.savefig("io/FactorVAE/figures/encoding_decoding_one_data.png")
-            plt.show()
-
-            fig = plt.figure(figsize=(12, 10), layout='constrained')
-            axs = fig.subplot_mosaic([['AE_1'], ['AE_2'], ['AE_3']])
-            axs['AE_1'].set_title("AE_1")
-            axs['AE_1'].set_xlabel("Sample")
-            axs['AE_1'].set_ylabel("Value")
-            axs['AE_1'].plot(input[:, -1, 0])
-            axs['AE_1'].plot(batch_reconstructed[:, -1, 0], linestyle="--")
-            axs['AE_1'].legend(['input', 'reconstructed'])
-
-            axs['AE_2'].set_title("AE_2")
-            axs['AE_2'].set_xlabel("Sample")
-            axs['AE_2'].set_ylabel("Value")
-            axs['AE_2'].plot(input[:, -1, 1])
-            axs['AE_2'].plot(batch_reconstructed[:, -1, 1], linestyle="--")
-            axs['AE_2'].legend(['input', 'reconstructed'])
-
-            axs['AE_3'].set_title("AE_3")
-            axs['AE_3'].set_xlabel("Sample")
-            axs['AE_3'].set_ylabel("Value")
-            axs['AE_3'].plot(input[:, -1, 2])
-            axs['AE_3'].plot(batch_reconstructed[:, -1, 2], linestyle="--")
-            axs['AE_3'].legend(['input', 'reconstructed'])
-
-            plt.tight_layout()
-            # save the figure
-            plt.savefig("io/FactorVAE/figures/encoding_decoding_xt_1.png")
-            plt.show()
+    # # -------------------------------------------- Make a prediction -------------------------------------------- #
+    # trainer.set_wandb(False)
+    # model.load_state_dict(torch.load("io/FactorVAE/2024-05-25_02-09-55/weights/weights.pt"))
+    # model.eval().to(device)
+    #
+    # for idx, (input) in enumerate(test_loader):
+    #
+    #     if idx == 0:
+    #         input = input.float()
+    #         input = input.to(device)
+    #
+    #         batch_reconstructed, mean, var, z = model(input)
+    #
+    #         input = input.cpu().detach()
+    #         batch_reconstructed = batch_reconstructed.cpu().detach()
+    #
+    #         print(f"input size: {input[0, :].size()}")
+    #         print(input[0, :])
+    #         print(f"batch_reconstructed size: {batch_reconstructed[0, :].size()}")
+    #         print(batch_reconstructed[0, :])
+    #
+    #         input = input.view(input.size(0), -1, nb_features)
+    #         batch_reconstructed = batch_reconstructed.view(batch_reconstructed.size(0), -1, nb_features)
+    #         print(f"input size: {input[0, :].size()}")
+    #         print(input[0, :])
+    #         print(f"batch_reconstructed size: {batch_reconstructed[0, :].size()}")
+    #         print(batch_reconstructed[0, :])
+    #
+    #         fig = plt.figure(figsize=(12, 10), layout='constrained')
+    #         axs = fig.subplot_mosaic([['AE_1'], ['AE_2'], ['AE_3']])
+    #         axs['AE_1'].set_title("AE_1")
+    #         axs['AE_1'].set_xlabel("Time")
+    #         axs['AE_1'].set_ylabel("Value")
+    #         axs['AE_1'].plot(input[idx, :, 0])
+    #         axs['AE_1'].plot(batch_reconstructed[idx, :, 0], linestyle="--")
+    #         axs['AE_1'].legend(['input', 'reconstructed'])
+    #
+    #         axs['AE_2'].set_title("AE_2")
+    #         axs['AE_2'].set_xlabel("Time")
+    #         axs['AE_2'].set_ylabel("Value")
+    #         axs['AE_2'].plot(input[idx, :, 1])
+    #         axs['AE_2'].plot(batch_reconstructed[idx, :, 1], linestyle="--")
+    #         axs['AE_2'].legend(['input', 'reconstructed'])
+    #
+    #         axs['AE_3'].set_title("AE_3")
+    #         axs['AE_3'].set_xlabel("Time")
+    #         axs['AE_3'].set_ylabel("Value")
+    #         axs['AE_3'].plot(input[idx, :, 2])
+    #         axs['AE_3'].plot(batch_reconstructed[idx, :, 2], linestyle="--")
+    #         axs['AE_3'].legend(['input', 'reconstructed'])
+    #
+    #         plt.tight_layout()
+    #         # save the figure
+    #         plt.savefig("io/FactorVAE/figures/encoding_decoding_one_data.png")
+    #         plt.show()
+    #
+    #         fig = plt.figure(figsize=(12, 10), layout='constrained')
+    #         axs = fig.subplot_mosaic([['AE_1'], ['AE_2'], ['AE_3']])
+    #         axs['AE_1'].set_title("AE_1")
+    #         axs['AE_1'].set_xlabel("Sample")
+    #         axs['AE_1'].set_ylabel("Value")
+    #         axs['AE_1'].plot(input[:, -1, 0])
+    #         axs['AE_1'].plot(batch_reconstructed[:, -1, 0], linestyle="--")
+    #         axs['AE_1'].legend(['input', 'reconstructed'])
+    #
+    #         axs['AE_2'].set_title("AE_2")
+    #         axs['AE_2'].set_xlabel("Sample")
+    #         axs['AE_2'].set_ylabel("Value")
+    #         axs['AE_2'].plot(input[:, -1, 1])
+    #         axs['AE_2'].plot(batch_reconstructed[:, -1, 1], linestyle="--")
+    #         axs['AE_2'].legend(['input', 'reconstructed'])
+    #
+    #         axs['AE_3'].set_title("AE_3")
+    #         axs['AE_3'].set_xlabel("Sample")
+    #         axs['AE_3'].set_ylabel("Value")
+    #         axs['AE_3'].plot(input[:, -1, 2])
+    #         axs['AE_3'].plot(batch_reconstructed[:, -1, 2], linestyle="--")
+    #         axs['AE_3'].legend(['input', 'reconstructed'])
+    #
+    #         plt.tight_layout()
+    #         # save the figure
+    #         plt.savefig("io/FactorVAE/figures/encoding_decoding_xt_1.png")
+    #         plt.show()
 

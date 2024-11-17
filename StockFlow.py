@@ -32,7 +32,7 @@ from nflows.transforms.autoregressive import MaskedAffineAutoregressiveTransform
 from nflows.transforms.permutations import ReversePermutation
 from nflows.nn.nets import ResidualNet
 
-DEBUG = False
+DEBUG = True
 
 
 class TrainerStockFlow:
@@ -233,6 +233,8 @@ if __name__ == "__main__":
     nb_features_factors = factors.size(-1)
     nb_features_stock = stock.size(-1)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f'nb_features_factors: {nb_features_factors}')
+    print(f'nb_features_stock: {nb_features_stock}')
 
     stock_flow_params = {
         'num_layers': config['StockFlow']['StockFlow']['num_layers'],
@@ -313,11 +315,15 @@ if __name__ == "__main__":
     for idx, (input) in enumerate(test_loader):
 
         input = input.float()
+        print(input.size())
         input = input.to(device)
 
         target = input[:, -1]
 
         context = input[:, :-1]
+
+        print("target size: ", target.size())
+        print("context size: ", context.size())
 
         x_mean = flow.sample(1000, context).cpu().detach().numpy().squeeze().mean(axis=1)
         x_std = flow.sample(1000, context).cpu().detach().numpy().squeeze().std(axis=1)
